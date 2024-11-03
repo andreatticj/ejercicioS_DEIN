@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="404.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SModalController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="438.0" minWidth="10.0" prefWidth="112.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="679.0" minWidth="10.0" prefWidth="438.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="43.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="103.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="167.0" minHeight="0.0" prefHeight="42.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="167.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="167.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="167.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="167.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="167.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="167.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="208.0" minHeight="10.0" prefHeight="71.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Label prefHeight="16.0" prefWidth="74.0" text="Nombre">
+         <GridPane.margin>
+            <Insets left="5.0" />
+         </GridPane.margin>
+      </Label>
+      <Label prefHeight="16.0" prefWidth="74.0" text="Raza" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets left="5.0" />
+         </GridPane.margin>
+      </Label>
+      <Label prefHeight="16.0" prefWidth="74.0" text="Especie" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets left="5.0" />
+         </GridPane.margin>
+      </Label>
+      <Label prefHeight="16.0" prefWidth="74.0" text="Sexo" GridPane.rowIndex="3">
+         <GridPane.margin>
+            <Insets left="5.0" />
+         </GridPane.margin>
+      </Label>
+      <TextField fx:id="textFieldNombre" maxWidth="458.0" minWidth="50.0" prefHeight="24.0" prefWidth="429.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+         <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+         </GridPane.margin>
+      </TextField>
+      <TextField fx:id="textFieldEspecie" maxWidth="458.0" minWidth="50.0" prefHeight="24.0" prefWidth="429.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+         </GridPane.margin>
+      </TextField>
+      <TextField fx:id="textFieldRaza" maxWidth="458.0" minWidth="50.0" prefHeight="24.0" prefWidth="429.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+         </GridPane.margin>
+      </TextField>
+      <Label prefHeight="16.0" prefWidth="74.0" text="Edad" GridPane.rowIndex="4">
+         <GridPane.margin>
+            <Insets left="5.0" />
+         </GridPane.margin>
+      </Label>
+      <Label prefHeight="16.0" prefWidth="74.0" text="Peso" GridPane.rowIndex="5">
+         <GridPane.margin>
+            <Insets left="5.0" />
+         </GridPane.margin>
+      </Label>
+      <Label prefHeight="16.0" prefWidth="104.0" text="Observaciones" GridPane.rowIndex="6">
+         <GridPane.margin>
+            <Insets left="5.0" />
+         </GridPane.margin>
+      </Label>
+      <Label prefHeight="16.0" prefWidth="74.0" text="Fecha" GridPane.rowIndex="7">
+         <GridPane.margin>
+            <Insets left="5.0" />
+         </GridPane.margin>
+      </Label>
+      <Label prefHeight="16.0" prefWidth="74.0" text="Foto" GridPane.rowIndex="8">
+         <GridPane.margin>
+            <Insets left="5.0" />
+         </GridPane.margin>
+      </Label>
+      <TextField fx:id="textFieldSexo" maxWidth="60.0" minWidth="50.0" prefHeight="24.0" prefWidth="429.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+         </GridPane.margin>
+      </TextField>
+      <TextField fx:id="textFieldEdad" maxWidth="60.0" minWidth="50.0" prefHeight="24.0" prefWidth="429.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+         <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+         </GridPane.margin>
+      </TextField>
+      <TextField fx:id="textFieldPeso" maxWidth="60.0" minWidth="50.0" prefHeight="24.0" prefWidth="429.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+         <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+         </GridPane.margin>
+      </TextField>
+      <TextField fx:id="textFieldObservaciones" maxWidth="458.0" minWidth="50.0" prefHeight="24.0" prefWidth="429.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+         <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+         </GridPane.margin>
+      </TextField>
+      <TextField fx:id="textFieldFecha" maxWidth="60.0" minWidth="50.0" prefHeight="24.0" prefWidth="429.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+         <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+         </GridPane.margin>
+      </TextField>
+      <Label prefHeight="16.0" prefWidth="429.0" text="FUNCION DESHABILITADA" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+      <Button fx:id="buttonGuardar" mnemonicParsing="false" onAction="#actionGuardar" prefHeight="35.0" prefWidth="157.0" text="Guardar" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="9">
+         <GridPane.margin>
+            <Insets left="40.0" />
+         </GridPane.margin></Button>
+      <Button fx:id="buttonCancelar" mnemonicParsing="false" onAction="#actionCancelar" prefHeight="35.0" prefWidth="157.0" text="Cancelar" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
+         <GridPane.margin>
+            <Insets right="40.0" />
+         </GridPane.margin></Button>
+   </children>
+</GridPane>

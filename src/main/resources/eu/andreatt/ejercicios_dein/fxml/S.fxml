@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="414.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="438.0" minWidth="10.0" prefWidth="236.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="679.0" minWidth="10.0" prefWidth="651.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="103.0" minHeight="10.0" prefHeight="103.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="149.0" minHeight="10.0" prefHeight="91.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="186.0" minHeight="10.0" prefHeight="96.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="104.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="46.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <TableView fx:id="tableVeterinario" onMouseClicked="#actionTablaPulsada" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="4">
+        <columns>
+          <TableColumn fx:id="tableColumnNombre" prefWidth="113.0" text="NOMBRE" />
+          <TableColumn fx:id="tableColumnEspecie" prefWidth="157.0" text="ESPECIE" />
+            <TableColumn fx:id="tableColumnRaza" prefWidth="111.0" text="RAZA" />
+            <TableColumn fx:id="tableColumnSexo" prefWidth="61.0" text="SEXO" />
+            <TableColumn fx:id="tableColumnEdad" prefWidth="56.0" text="EDAD" />
+            <TableColumn fx:id="tableColumnPeso" prefWidth="52.0" text="PESO" />
+            <TableColumn fx:id="tableColumnObservaciones" prefWidth="139.0" text="OBSERVACIONES" />
+            <TableColumn fx:id="tableColumnFecha" prefWidth="210.0" text="FECHA PRIMERA CONSULTA" />
+            <TableColumn fx:id="tableColumnFoto" prefWidth="75.0" text="FOTO" />
+        </columns>
+         <GridPane.margin>
+            <Insets left="20.0" right="20.0" top="20.0" />
+         </GridPane.margin>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+      <Button fx:id="buttonAgregarPersona" mnemonicParsing="false" onAction="#actionAgregarAnimal" prefHeight="35.0" prefWidth="157.0" text="Agregar Animal" GridPane.halignment="LEFT" GridPane.rowIndex="5">
+         <GridPane.margin>
+            <Insets left="100.0" />
+         </GridPane.margin>
+      </Button>
+      <Button fx:id="buttonModificarPersona" mnemonicParsing="false" onAction="#actionModificarAnimal" prefHeight="35.0" prefWidth="157.0" text="Modificar Animal" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="5">
+         <GridPane.margin>
+            <Insets left="120.0" />
+         </GridPane.margin>
+      </Button>
+      <Button fx:id="buttonEliminarPersona" mnemonicParsing="false" onAction="#actionEliminarAnimal" prefHeight="35.0" prefWidth="157.0" text="Eliminar Animal" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+         <GridPane.margin>
+            <Insets right="100.0" />
+         </GridPane.margin></Button>
+      <Label text="Filtrar por nombre: ">
+         <GridPane.margin>
+            <Insets left="10.0" top="10.0" />
+         </GridPane.margin>
+      </Label>
+      <TextField fx:id="textFieldFiltro" maxWidth="200.0" prefHeight="24.0" prefWidth="282.0" GridPane.columnSpan="2">
+         <GridPane.margin>
+            <Insets left="140.0" top="10.0" />
+         </GridPane.margin>
+      </TextField>
+   </children>
+</GridPane>
