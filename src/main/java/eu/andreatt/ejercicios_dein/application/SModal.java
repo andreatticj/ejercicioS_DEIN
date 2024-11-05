@@ -1,5 +1,6 @@
 package eu.andreatt.ejercicios_dein.application;
 
+import eu.andreatt.ejercicios_dein.controllers.SModalController;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
@@ -7,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import java.io.IOException;
 
-import controllers.SModalController;
 import javafx.fxml.FXMLLoader;
 
 public class SModal extends Stage {
@@ -16,7 +16,7 @@ public class SModal extends Stage {
 	
     public SModal() {
         try {			           
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/S_modal.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/andreatt/ejercicios_dein/fxml/S_modal.fxml"));
             
             Parent root;
             try {
@@ -34,7 +34,7 @@ public class SModal extends Stage {
 
             setScene(scene);
             
-			Image icon = new Image(getClass().getResourceAsStream("/images/veterinaria.png"));
+			Image icon = new Image(getClass().getResourceAsStream("/eu/andreatt/ejercicios_dein/images/veterinaria.png"));
 			getIcons().add(icon);			
 			
 			showAndWait();
@@ -45,7 +45,7 @@ public class SModal extends Stage {
     
     public SModal(String nombre, String especie, String raza, String sexo, int edad, float peso, String observaciones, String fecha) {
         try {			           
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/S_modal.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/andreatt/ejercicios_dein/fxml/S_modal.fxml"));
             
             Parent root;
             try {
@@ -71,7 +71,7 @@ public class SModal extends Stage {
 
             setScene(scene);
             
-			Image icon = new Image(getClass().getResourceAsStream("/images/veterinaria.png"));
+			Image icon = new Image(getClass().getResourceAsStream("/eu/andreatt/ejercicios_dein/images/veterinaria.png"));
 			getIcons().add(icon);			
 			
 			showAndWait();

@@ -11,13 +11,13 @@ public class S extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {			
-            GridPane root = (GridPane)FXMLLoader.load(getClass().getResource("/fxml/S.fxml"));
+            GridPane root = (GridPane)FXMLLoader.load(getClass().getResource("/eu/andreatt/ejercicios_dein/fxml/S.fxml"));
             Scene scene = new Scene(root,1000,820);
             primaryStage.setTitle("Veterinario");
             primaryStage.setResizable(false);
             primaryStage.setScene(scene);
             
-			Image icon = new Image(getClass().getResourceAsStream("/images/veterinaria.png"));
+			Image icon = new Image(getClass().getResourceAsStream("/eu/andreatt/ejercicios_dein/images/veterinaria.png"));
 			primaryStage.getIcons().add(icon);			
 			
             primaryStage.show();

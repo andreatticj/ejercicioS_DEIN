@@ -16,6 +16,6 @@ CREATE TABLE
         `peso` DECIMAL(20,2) NULL DEFAULT NULL,
         `observaciones` VARCHAR(250) NULL DEFAULT NULL,
         `fecha_primera_consulta` VARCHAR(10) NULL DEFAULT NULL,
-	    `foto` blob NULL DEFAULT NULL,
+	    `imagen` blob NULL DEFAULT NULL,
         PRIMARY KEY (`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = latin1;

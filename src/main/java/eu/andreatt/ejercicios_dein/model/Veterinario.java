@@ -1,5 +1,6 @@
 package eu.andreatt.ejercicios_dein.model;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import javafx.scene.image.ImageView;
@@ -11,18 +12,19 @@ public class Veterinario {
 	private String nombre, especie, raza, sexo, observaciones, fecha;
 	private int id, edad;
 	private float peso;
-	private ImageView foto;
-	
+	private byte[] imagen; // Cambiado a byte[] para almacenar la imagen
+
 	/** CONSTRUCTOR */
-	public Veterinario(String nombre, String especie, String raza, String sexo, int edad, float peso, String observaciones, String fecha) {
-		this.nombre=nombre;
-		this.especie=especie;
-		this.raza=raza;
-		this.sexo=sexo;
-		this.edad=edad;
-		this.peso=peso;
-		this.observaciones=observaciones;
-		this.fecha=fecha;
+	public Veterinario(String nombre, String especie, String raza, String sexo, int edad, float peso, String observaciones, String fecha, byte[] imagen) {
+		this.nombre = nombre;
+		this.especie = especie;
+		this.raza = raza;
+		this.sexo = sexo;
+		this.edad = edad;
+		this.peso = peso;
+		this.observaciones = observaciones;
+		this.fecha = fecha;
+		this.imagen = imagen; // Asignar la imagen
 	}
 
 	/** GETTERS Y SETTERS */
@@ -98,38 +100,40 @@ public class Veterinario {
 		this.peso = peso;
 	}
 
-	public ImageView getFoto() {
-		return foto;
+	public byte[] getImagen() {
+		return imagen; // Getter para la imagen en formato byte[]
 	}
 
-	public void setFoto(ImageView foto) {
-		this.foto = foto;
+	public void setImagen(byte[] imagen) {
+		this.imagen = imagen; // Setter para la imagen en formato byte[]
 	}
-	
+
 	/** EQUALS Y HASHCODE */
 	@Override
 	public int hashCode() {
-		return Objects.hash(edad, especie, fecha, foto, id, nombre, observaciones, peso, raza, sexo);
+		return Objects.hash(edad, especie, fecha, id, nombre, observaciones, peso, raza, sexo, imagen);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null || getClass() != obj.getClass()) return false;
 		Veterinario other = (Veterinario) obj;
-		return edad == other.edad && Objects.equals(especie, other.especie) && Objects.equals(fecha, other.fecha)
-				&& Objects.equals(foto, other.foto) && id == other.id && Objects.equals(nombre, other.nombre)
-				&& Objects.equals(observaciones, other.observaciones)
-				&& Float.floatToIntBits(peso) == Float.floatToIntBits(other.peso) && Objects.equals(raza, other.raza)
-				&& Objects.equals(sexo, other.sexo);
+		return edad == other.edad &&
+				Float.compare(other.peso, peso) == 0 &&
+				id == other.id &&
+				Objects.equals(nombre, other.nombre) &&
+				Objects.equals(especie, other.especie) &&
+				Objects.equals(raza, other.raza) &&
+				Objects.equals(sexo, other.sexo) &&
+				Objects.equals(observaciones, other.observaciones) &&
+				Objects.equals(fecha, other.fecha) &&
+				Arrays.equals(imagen, other.imagen); // Comparar byte[] correctamente
 	}
 
 	/** TO STRING */
+	@Override
 	public String toString() {
-		return nombre+" - "+raza;
+		return nombre + " - " + raza;
 	}
 }
