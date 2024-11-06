@@ -6,15 +6,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.InputStream;
-import java.sql.Blob;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
 
 public class VeterinarioDao {
 	private ConexionBD conexion;
 
-	/** CARGAR LOS VETERINARIOS EXISTENTES EN BASE DE DATOS */
+	/**
+	 * Carga todos los veterinarios existentes en la base de datos y los devuelve como una lista observable de objetos Animal.
+	 *
+	 * @return Una lista observable de animales.
+	 */
 	public ObservableList<Animal> cargarAnimales() {
 		ObservableList<Animal> animals = FXCollections.observableArrayList();
 		try {
@@ -31,7 +33,7 @@ public class VeterinarioDao {
 				int edadAnimal = rs.getInt("edad");
 				float pesoAnimal = rs.getFloat("peso");
 				String observacionesAnimal = rs.getString("observaciones");
-				String fechaPrimeraConsulta = rs.getString("fecha_primera_consulta");
+				LocalDate fechaPrimeraConsulta = rs.getDate("fecha_primera_consulta").toLocalDate();
 				Blob foto = rs.getBlob("imagen");
 
 				// Crear objeto Veterinario con el Blob de la imagen
@@ -45,7 +47,13 @@ public class VeterinarioDao {
 		return animals;
 	}
 
-	/** INSERTAR UN VETERINARIO EN LA BASE DE DATOS */
+	/**
+	 * Inserta un nuevo veterinario en la base de datos.
+	 * Si el veterinario ya existe, la inserción no se realiza.
+	 *
+	 * @param p El objeto Animal que representa al veterinario a insertar.
+	 * @return true si la inserción fue exitosa, false si el veterinario ya existe.
+	 */
 	public boolean nuevoVeterinario(Animal p) {
 		// Validar si el veterinario ya existe
 		ObservableList<Animal> animals = cargarAnimales();
@@ -67,8 +75,8 @@ public class VeterinarioDao {
 			pstmt.setInt(6, p.getEdad());
 			pstmt.setFloat(7, p.getPeso());
 			pstmt.setString(8, p.getObservaciones());
-			pstmt.setString(9, p.getFecha());
-			pstmt.setBlob(9, p.getImagen());
+			pstmt.setDate(9, Date.valueOf(p.getFecha()));
+			pstmt.setBlob(10, p.getImagen());
 
 			pstmt.executeUpdate();
 			conexion.closeConnection();
@@ -80,7 +88,11 @@ public class VeterinarioDao {
 		return false; // Retornar falso si hubo un error
 	}
 
-	/** BORRAR UN VETERINARIO EN LA BASE DE DATOS */
+	/**
+	 * Elimina un veterinario de la base de datos.
+	 *
+	 * @param p El objeto Animal que representa al veterinario a eliminar.
+	 */
 	public void borrarVeterinario(Animal p) {
 		try {
 			conexion = new ConexionBD();
@@ -94,7 +106,12 @@ public class VeterinarioDao {
 		}
 	}
 
-	/** ACTUALIZAR UN VETERINARIO EN LA BASE DE DATOS */
+	/**
+	 * Actualiza la información de un veterinario en la base de datos.
+	 *
+	 * @param antiguoAnimal El objeto Animal que contiene los datos antiguos.
+	 * @param nuevoAnimal El objeto Animal que contiene los nuevos datos a actualizar.
+	 */
 	public void modificarVeterinario(Animal antiguoAnimal, Animal nuevoAnimal) {
 		try {
 			conexion = new ConexionBD();
@@ -108,7 +125,7 @@ public class VeterinarioDao {
 			pstmt.setInt(5, nuevoAnimal.getEdad());
 			pstmt.setFloat(6, nuevoAnimal.getPeso());
 			pstmt.setString(7, nuevoAnimal.getObservaciones());
-			pstmt.setString(8, nuevoAnimal.getFecha());
+			pstmt.setDate(8, Date.valueOf(nuevoAnimal.getFecha()));
 
 			// Verificar si la imagen es null antes de intentar obtener el BinaryStream
 			Blob imagenBlob = nuevoAnimal.getImagen();
@@ -126,7 +143,13 @@ public class VeterinarioDao {
 			e.printStackTrace();
 		}
 	}
-	/** OBTENER EL ID DEL VETERINARIO SOLICITADO */
+
+	/**
+	 * Obtiene el ID de un veterinario basado en su nombre, raza y edad.
+	 *
+	 * @param p El objeto Animal que contiene los datos para buscar el ID.
+	 * @return El ID del veterinario, o -1 si no se encuentra.
+	 */
 	public int dameIDVeterinario(Animal p) {
 		try {
 			conexion = new ConexionBD();
@@ -148,7 +171,11 @@ public class VeterinarioDao {
 		return -1; // Retornar -1 si no se encontró
 	}
 
-	/** OBTENER EL ID MÁS GRANDE DE LOS VETERINARIOS EN BASE DE DATOS */
+	/**
+	 * Obtiene el ID más grande de los veterinarios en la base de datos.
+	 *
+	 * @return El ID más grande, o -1 si no se encuentra.
+	 */
 	public int dameMaxID() {
 		try {
 			conexion = new ConexionBD();

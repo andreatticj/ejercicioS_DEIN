@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
@@ -20,9 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 /**
  * Controlador para la ventana modal que gestiona la información de un veterinario.
+ * Permite ingresar y modificar los datos de un animal, incluyendo la carga de una imagen.
  */
 public class SModalController {
 
@@ -45,7 +48,7 @@ public class SModalController {
 	private TextField textFieldEspecie;
 
 	@FXML
-	private TextField textFieldFecha;
+	private DatePicker fecha;
 
 	@FXML
 	private TextField textFieldNombre;
@@ -62,19 +65,34 @@ public class SModalController {
 	@FXML
 	private TextField textFieldSexo;
 
+	/** Objeto Animal que contiene los datos que se gestionan en la ventana. */
 	private Animal animal;
-	private Blob imagen; // Imagen del animal en formato Blob
 
+	/** Imagen del animal en formato Blob. */
+	private Blob imagen;
+
+	/**
+	 * Acción que se ejecuta cuando el usuario cancela la operación. Cierra la ventana modal sin realizar cambios.
+	 *
+	 * @param event El evento de acción generado por el usuario.
+	 */
 	@FXML
 	void actionCancelar(ActionEvent event) {
 		Stage stage = (Stage) buttonCancelar.getScene().getWindow();
 		stage.close();
 	}
 
+	/**
+	 * Acción que se ejecuta cuando el usuario guarda los datos ingresados. Valida los datos y, si son correctos,
+	 * crea un nuevo objeto {@link Animal} con los valores introducidos.
+	 *
+	 * @param event El evento de acción generado por el usuario.
+	 */
 	@FXML
 	void actionGuardar(ActionEvent event) {
 		String errores = validarDatos();
 
+		// Si hay errores en los datos, muestra una alerta con los mensajes de error.
 		if (!errores.isEmpty()) {
 			Alert alerta = generarVentana(AlertType.ERROR, errores, "ERROR");
 			alerta.show();
@@ -87,7 +105,7 @@ public class SModalController {
 					Integer.parseInt(textFieldEdad.getText()),
 					Float.parseFloat(textFieldPeso.getText()),
 					textFieldObservaciones.getText(),
-					textFieldFecha.getText(),
+					fecha.getValue(),
 					imagen
 			);
 			System.out.println(animal);
@@ -96,26 +114,42 @@ public class SModalController {
 		}
 	}
 
+	/**
+	 * Acción que se ejecuta cuando el usuario selecciona una imagen para el animal. Permite cargar una imagen desde
+	 * el sistema de archivos y mostrarla en el {@link ImageView}.
+	 *
+	 * @param event El evento de acción generado por el usuario.
+	 */
 	@FXML
 	void actionSeleccionarImagen(ActionEvent event) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos de imagen", "*.png", "*.jpg", "*.gif"));
 
+		// Muestra un cuadro de diálogo para seleccionar un archivo de imagen.
 		File archivo = fileChooser.showOpenDialog(buttonImage.getScene().getWindow());
 		if (archivo != null) {
 			try {
+				// Convierte la imagen seleccionada en un formato adecuado para el ImageView.
 				BufferedImage bufferedImage = ImageIO.read(archivo);
 				Image imagenFX = SwingFXUtils.toFXImage(bufferedImage, null);
 				imageView.setImage(imagenFX);
 			} catch (IOException e) {
+				// Muestra una alerta en caso de error al cargar la imagen.
 				generarVentana(AlertType.ERROR, "Error al cargar la imagen: " + e.getMessage(), "ERROR").show();
 			}
 		}
 	}
 
+	/**
+	 * Valida los datos ingresados en los campos de texto. Verifica que los campos obligatorios no estén vacíos y que
+	 * los valores numéricos (edad y peso) sean correctos.
+	 *
+	 * @return Una cadena de texto que contiene los errores encontrados, o una cadena vacía si no hay errores.
+	 */
 	private String validarDatos() {
 		StringBuilder errores = new StringBuilder();
 
+		// Valida que los campos no estén vacíos y que los valores numéricos sean correctos.
 		if (textFieldNombre.getText().isEmpty()) {
 			errores.append("* El nombre no puede estar vacío.\n");
 		}
@@ -148,6 +182,14 @@ public class SModalController {
 		return errores.toString();
 	}
 
+	/**
+	 * Genera una ventana de alerta con el tipo de alerta, el mensaje y el título especificados.
+	 *
+	 * @param tipo El tipo de alerta que se mostrará.
+	 * @param mensaje El mensaje que se mostrará en la alerta.
+	 * @param titulo El título de la alerta.
+	 * @return La ventana de alerta configurada.
+	 */
 	private Alert generarVentana(AlertType tipo, String mensaje, String titulo) {
 		Alert alerta = new Alert(tipo);
 		alerta.setTitle(titulo);
@@ -156,8 +198,13 @@ public class SModalController {
 		return alerta;
 	}
 
+	/**
+	 * Carga los datos de un animal existente en los campos de la ventana modal.
+	 *
+	 * @param animal El objeto {@link Animal} con los datos que se cargarán en los campos.
+	 */
 	public void cargarDatosAnimal(Animal animal) {
-		// Cargar los datos del animal en los TextFields
+		// Carga los datos del animal en los TextFields.
 		setTextFieldNombre(animal.getNombre());
 		setTextFieldEspecie(animal.getEspecie());
 		setTextFieldRaza(animal.getRaza());
@@ -165,28 +212,40 @@ public class SModalController {
 		setTextFieldEdad(String.valueOf(animal.getEdad()));
 		setTextFieldPeso(String.valueOf(animal.getPeso()));
 		setTextFieldObservaciones(animal.getObservaciones());
-		setTextFieldFecha(animal.getFecha());
+		setFecha(animal.getFecha());
 
-		// Cargar la imagen
+		// Carga la imagen del animal si está disponible.
 		if (animal.getImagen() != null) {
 			try {
 				BufferedImage bufferedImage = ImageIO.read(animal.getImagen().getBinaryStream());
 				Image imagenFX = SwingFXUtils.toFXImage(bufferedImage, null);
 				imageView.setImage(imagenFX);
 			} catch (IOException | SQLException e) {
+				// Muestra una alerta en caso de error al cargar la imagen.
 				generarVentana(AlertType.ERROR, "Error al cargar la imagen: " + e.getMessage(), "ERROR").show();
 			}
 		}
 	}
 
-
+	/**
+	 * Obtiene el objeto {@link Animal} asociado a la ventana modal.
+	 *
+	 * @return El objeto {@link Animal} con los datos ingresados en la ventana.
+	 */
 	public Animal getAnimal() {
 		return animal;
 	}
 
+	/**
+	 * Establece el objeto {@link Animal} asociado a la ventana modal.
+	 *
+	 * @param animal El objeto {@link Animal} que se asociará a la ventana.
+	 */
 	public void setAnimal(Animal animal) {
 		this.animal = animal;
 	}
+
+	// Métodos para establecer los valores de los campos de texto.
 
 	public void setTextFieldNombre(String nombre) {
 		this.textFieldNombre.setText(nombre);
@@ -216,8 +275,12 @@ public class SModalController {
 		this.textFieldObservaciones.setText(observaciones);
 	}
 
-	public void setTextFieldFecha(String fecha) {
-		this.textFieldFecha.setText(fecha);
+	public void setFecha(LocalDate fecha) {
+		this.fecha.setValue(fecha);
+	}
+
+	public Blob getImagen() {
+		return imagen;
 	}
 
 	public void setImagen(Blob imagen) {

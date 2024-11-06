@@ -94,14 +94,21 @@ public class SController {
 	void actionAgregarAnimal(ActionEvent event) {
 		SModal modal = new SModal();
 		SModalController controlador = modal.getController();
-		Animal nuevoAnimal = controlador.getAnimal();
+		Animal nuevoAnimal = controlador.getAnimal();  // Obtener el animal del modal
 
-		if (nuevoAnimal != null && !animalExistentes.contains(nuevoAnimal)) {
+		// Verificar si el animal es null, lo que indica que no se ha agregado ningún animal
+		if (nuevoAnimal == null) {
+			return; // No hacer nada si no se ha creado un nuevo animal
+		}
+
+		// Verificar si el animal ya existe en la lista
+		if (animalExistentes.contains(nuevoAnimal)) {
+			mostrarAlerta(AlertType.ERROR, "Ya existe este animal en la tabla", "ERROR");
+		} else {
+			// Si el animal no existe, agregarlo a la base de datos y a la lista
 			veterinarioDao.nuevoVeterinario(nuevoAnimal);
 			animalExistentes.add(nuevoAnimal);
 			modal.close();  // Cerrar el modal después de agregar el animal
-		} else {
-			mostrarAlerta(AlertType.ERROR, "Ya existe este animal en la tabla", "ERROR");
 		}
 	}
 
@@ -137,14 +144,14 @@ public class SController {
 		}
 
 		// Crear una instancia de la ventana modal
-		SModal modal = new SModal();
+		SModal modal = new SModal(animalSeleccionado);
 		SModalController controlador = modal.getController();
 
 		// Cargar los datos del animal seleccionado en la ventana modal
 		controlador.cargarDatosAnimal(animalSeleccionado);
 
 		// Mostrar la ventana modal después de cargar los datos
-		modal.showAndWait();
+		//modal.showAndWait();
 
 		// Obtener el animal modificado después de cerrar la ventana modal
 		Animal animalModificado = controlador.getAnimal();

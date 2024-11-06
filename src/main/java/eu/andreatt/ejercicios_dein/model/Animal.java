@@ -1,19 +1,38 @@
 package eu.andreatt.ejercicios_dein.model;
 
+import javafx.scene.control.DatePicker;
+
 import java.sql.Blob;
+import java.time.LocalDate;
 import java.util.Objects;
 
-/** CLASE VETERINARIO PARA EL EJERCICIO (S) */
+/**
+ * Clase que representa un animal en el contexto del ejercicio (S).
+ * Contiene los atributos, métodos y operaciones asociados a un animal, como nombre, especie, raza, sexo, etc.
+ */
 public class Animal {
 
-	/** VARIABLES */
-	private String nombre, especie, raza, sexo, observaciones, fecha;
+	/** Variables que almacenan la información de un animal. */
+	private String nombre, especie, raza, sexo, observaciones;
+	private LocalDate fecha;
 	private int id, edad;
 	private float peso;
 	private Blob imagen;
 
-	/** CONSTRUCTOR */
-	public Animal(String nombre, String especie, String raza, String sexo, int edad, float peso, String observaciones, String fecha, Blob imagen) {
+	/**
+	 * Constructor que inicializa un objeto Animal con los valores proporcionados.
+	 *
+	 * @param nombre Nombre del animal.
+	 * @param especie Especie del animal.
+	 * @param raza Raza del animal.
+	 * @param sexo Sexo del animal.
+	 * @param edad Edad del animal.
+	 * @param peso Peso del animal.
+	 * @param observaciones Observaciones sobre el animal.
+	 * @param fecha Fecha de nacimiento o algún otro tipo de fecha relevante del animal.
+	 * @param imagen Imagen del animal en formato {@link Blob}.
+	 */
+	public Animal(String nombre, String especie, String raza, String sexo, int edad, float peso, String observaciones, LocalDate fecha, Blob imagen) {
 		this.nombre = nombre;
 		this.especie = especie;
 		this.raza = raza;
@@ -25,7 +44,8 @@ public class Animal {
 		this.imagen = imagen; // Asignar la imagen
 	}
 
-	/** GETTERS Y SETTERS */
+	/** Métodos getter y setter para acceder y modificar los valores de las variables. */
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -66,14 +86,6 @@ public class Animal {
 		this.observaciones = observaciones;
 	}
 
-	public String getFecha() {
-		return fecha;
-	}
-
-	public void setFecha(String fecha) {
-		this.fecha = fecha;
-	}
-
 	public int getId() {
 		return id;
 	}
@@ -98,20 +110,49 @@ public class Animal {
 		this.peso = peso;
 	}
 
+	/**
+	 * Obtiene la imagen del animal en formato {@link Blob}.
+	 *
+	 * @return La imagen del animal en formato {@link Blob}.
+	 */
 	public Blob getImagen() {
 		return imagen; // Getter para la imagen en formato byte[]
 	}
 
-	public void setImagen(Blob magen) {
+	/**
+	 * Establece la imagen del animal en formato {@link Blob}.
+	 *
+	 * @param imagen La imagen del animal en formato {@link Blob}.
+	 */
+	public void setImagen(Blob imagen) {
 		this.imagen = imagen; // Setter para la imagen en formato byte[]
 	}
 
-	/** EQUALS Y HASHCODE */
+	public void setFecha(LocalDate fecha) {
+		this.fecha = fecha;
+	}
+
+	public LocalDate getFecha() {
+		return fecha;
+	}
+
+
+	/**
+	 * Metodo para generar un código hash único para el objeto {@link Animal}.
+	 *
+	 * @return Un valor entero que representa el código hash del objeto {@link Animal}.
+	 */
 	@Override
 	public int hashCode() {
 		return Objects.hash(edad, especie, fecha, id, nombre, observaciones, peso, raza, sexo, imagen);
 	}
 
+	/**
+	 * Metodo para comparar si dos objetos {@link Animal} son iguales.
+	 *
+	 * @param obj El objeto a comparar con el actual.
+	 * @return {@code true} si ambos objetos son iguales, {@code false} en caso contrario.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
@@ -129,7 +170,11 @@ public class Animal {
 				Objects.equals(imagen, other.imagen);
 	}
 
-	/** TO STRING */
+	/**
+	 * Metodo que devuelve una representación en forma de cadena del objeto {@link Animal}.
+	 *
+	 * @return Una cadena representando el animal con su nombre y raza.
+	 */
 	@Override
 	public String toString() {
 		return nombre + " - " + raza;

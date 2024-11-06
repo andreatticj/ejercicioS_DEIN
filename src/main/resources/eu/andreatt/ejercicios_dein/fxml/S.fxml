@@ -35,7 +35,6 @@
             <TableColumn fx:id="tableColumnPeso" prefWidth="52.0" text="PESO" />
             <TableColumn fx:id="tableColumnObservaciones" prefWidth="139.0" text="OBSERVACIONES" />
             <TableColumn fx:id="tableColumnFecha" prefWidth="210.0" text="FECHA PRIMERA CONSULTA" />
-            <TableColumn fx:id="tableColumnFoto" prefWidth="75.0" text="FOTO" />
         </columns>
          <GridPane.margin>
             <Insets left="20.0" right="20.0" top="20.0" />
