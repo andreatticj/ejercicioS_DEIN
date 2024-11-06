@@ -1,21 +1,19 @@
 package eu.andreatt.ejercicios_dein.model;
 
-import java.util.Arrays;
+import java.sql.Blob;
 import java.util.Objects;
 
-import javafx.scene.image.ImageView;
-
 /** CLASE VETERINARIO PARA EL EJERCICIO (S) */
-public class Veterinario {
+public class Animal {
 
 	/** VARIABLES */
 	private String nombre, especie, raza, sexo, observaciones, fecha;
 	private int id, edad;
 	private float peso;
-	private byte[] imagen; // Cambiado a byte[] para almacenar la imagen
+	private Blob imagen;
 
 	/** CONSTRUCTOR */
-	public Veterinario(String nombre, String especie, String raza, String sexo, int edad, float peso, String observaciones, String fecha, byte[] imagen) {
+	public Animal(String nombre, String especie, String raza, String sexo, int edad, float peso, String observaciones, String fecha, Blob imagen) {
 		this.nombre = nombre;
 		this.especie = especie;
 		this.raza = raza;
@@ -100,11 +98,11 @@ public class Veterinario {
 		this.peso = peso;
 	}
 
-	public byte[] getImagen() {
+	public Blob getImagen() {
 		return imagen; // Getter para la imagen en formato byte[]
 	}
 
-	public void setImagen(byte[] imagen) {
+	public void setImagen(Blob magen) {
 		this.imagen = imagen; // Setter para la imagen en formato byte[]
 	}
 
@@ -118,7 +116,7 @@ public class Veterinario {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (obj == null || getClass() != obj.getClass()) return false;
-		Veterinario other = (Veterinario) obj;
+		Animal other = (Animal) obj;
 		return edad == other.edad &&
 				Float.compare(other.peso, peso) == 0 &&
 				id == other.id &&
@@ -128,7 +126,7 @@ public class Veterinario {
 				Objects.equals(sexo, other.sexo) &&
 				Objects.equals(observaciones, other.observaciones) &&
 				Objects.equals(fecha, other.fecha) &&
-				Arrays.equals(imagen, other.imagen); // Comparar byte[] correctamente
+				Objects.equals(imagen, other.imagen);
 	}
 
 	/** TO STRING */

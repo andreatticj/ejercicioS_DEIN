@@ -25,7 +25,7 @@
       <RowConstraints maxHeight="46.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <TableView fx:id="tableVeterinario" onMouseClicked="#actionTablaPulsada" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="4">
+      <TableView fx:id="tableVeterinario" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="4">
         <columns>
           <TableColumn fx:id="tableColumnNombre" prefWidth="113.0" text="NOMBRE" />
           <TableColumn fx:id="tableColumnEspecie" prefWidth="157.0" text="ESPECIE" />

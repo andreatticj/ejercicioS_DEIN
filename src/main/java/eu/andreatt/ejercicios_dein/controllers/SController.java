@@ -2,55 +2,42 @@ package eu.andreatt.ejercicios_dein.controllers;
 
 import eu.andreatt.ejercicios_dein.application.SModal;
 import eu.andreatt.ejercicios_dein.dao.VeterinarioDao;
-import eu.andreatt.ejercicios_dein.model.Veterinario;
+import eu.andreatt.ejercicios_dein.model.Animal;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 
 /**
  * Controlador para la gestión de veterinarios en la aplicación.
- *
  * Proporciona funcionalidades para agregar, eliminar y modificar registros
  * de veterinarios en una tabla de la interfaz gráfica.
  */
 public class SController {
 
-	/** Columnas de la tabla que muestran la información de cada veterinario */
 	@FXML
-	private TableColumn<Veterinario, Integer> tableColumnEdad;
+	private TableColumn<Animal, Integer> tableColumnEdad;
 	@FXML
-	private TableColumn<Veterinario, String> tableColumnEspecie;
+	private TableColumn<Animal, String> tableColumnEspecie;
 	@FXML
-	private TableColumn<Veterinario, String> tableColumnFecha;
+	private TableColumn<Animal, String> tableColumnFecha;
 	@FXML
-	private TableColumn<Veterinario, ImageView> tableColumnFoto;
+	private TableColumn<Animal, String> tableColumnNombre;
 	@FXML
-	private TableColumn<Veterinario, String> tableColumnNombre;
+	private TableColumn<Animal, String> tableColumnObservaciones;
 	@FXML
-	private TableColumn<Veterinario, String> tableColumnObservaciones;
+	private TableColumn<Animal, Float> tableColumnPeso;
 	@FXML
-	private TableColumn<Veterinario, Float> tableColumnPeso;
+	private TableColumn<Animal, String> tableColumnRaza;
 	@FXML
-	private TableColumn<Veterinario, String> tableColumnRaza;
-	@FXML
-	private TableColumn<Veterinario, String> tableColumnSexo;
+	private TableColumn<Animal, String> tableColumnSexo;
 
-	/** Tabla que contiene la lista de veterinarios */
 	@FXML
-	private TableView<Veterinario> tableVeterinario;
+	private TableView<Animal> tableVeterinario;
 
-	/** Botones para agregar, eliminar y modificar veterinarios */
 	@FXML
 	private Button buttonAgregarPersona;
 	@FXML
@@ -58,34 +45,23 @@ public class SController {
 	@FXML
 	private Button buttonModificarPersona;
 
-	/** Campo de texto para filtrar veterinarios */
 	@FXML
 	private TextField textFieldFiltro;
 
-	/** Lista de veterinarios existentes cargados desde la base de datos */
-	private ObservableList<Veterinario> veterinarioExistentes;
+	private ObservableList<Animal> animalExistentes;
+	private ObservableList<Animal> filteredList;
+	private Animal animalSeleccionado;
 
-	/** Lista de veterinarios filtrada en base al campo de búsqueda */
-	private ObservableList<Veterinario> filteredList;
-
-	/** Veterinario actualmente seleccionado */
-	private Veterinario veterinario;
-
-	/** Controlador del modal para ingresar datos de veterinarios */
-	private SModalController controlador;
-
-	/** Objeto de acceso a datos para la clase Veterinario */
-	private VeterinarioDao veterinarioDao;
+	private VeterinarioDao veterinarioDao = new VeterinarioDao();
 
 	/**
 	 * Inicializa la tabla y carga los datos desde la base de datos.
 	 */
 	@FXML
 	public void initialize() {
-		veterinarioDao = new VeterinarioDao();
-		veterinarioExistentes = FXCollections.observableArrayList(veterinarioDao.cargarVeterinario());
+		cargarDatos();
 
-		// Configuración de las celdas de la tabla para mostrar los datos
+		// Configuración de las columnas de la tabla
 		tableColumnNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 		tableColumnEspecie.setCellValueFactory(new PropertyValueFactory<>("especie"));
 		tableColumnRaza.setCellValueFactory(new PropertyValueFactory<>("raza"));
@@ -95,147 +71,130 @@ public class SController {
 		tableColumnObservaciones.setCellValueFactory(new PropertyValueFactory<>("observaciones"));
 		tableColumnFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
 
-		tableVeterinario.setItems(veterinarioExistentes);
+		tableVeterinario.setItems(animalExistentes);
 
-		// Configuración del filtro de búsqueda en tiempo real
-		textFieldFiltro.textProperty().addListener((observable, oldValue, newValue) -> {
-			String filter = newValue.toLowerCase();
-
-			filteredList = veterinarioExistentes.filtered(animal ->
-					animal.getNombre().toLowerCase().contains(filter) ||
-							animal.getEspecie().toLowerCase().contains(filter) ||
-							animal.getRaza().toLowerCase().contains(filter) ||
-							animal.getObservaciones().toLowerCase().contains(filter)
-			);
-
-			tableVeterinario.setItems(filteredList);
-		});
+		// Listener para el filtro en la tabla
+		textFieldFiltro.textProperty().addListener((observable, oldValue, newValue) -> filtrarAnimal(newValue));
 	}
 
 	/**
-	 * Agrega un nuevo veterinario a la base de datos y lo muestra en la tabla.
+	 * Carga los datos de los animales desde la base de datos.
+	 */
+	private void cargarDatos() {
+		animalExistentes = FXCollections.observableArrayList(veterinarioDao.cargarAnimales());
+		tableVeterinario.setItems(animalExistentes);
+	}
+
+	/**
+	 * Agrega un nuevo animal a la base de datos y lo muestra en la tabla.
 	 *
 	 * @param event Evento de acción del botón de agregar.
 	 */
 	@FXML
 	void actionAgregarAnimal(ActionEvent event) {
 		SModal modal = new SModal();
-		controlador = modal.getController();
-		Veterinario nuevoVeterinario = controlador.veterinario;
+		SModalController controlador = modal.getController();
+		Animal nuevoAnimal = controlador.getAnimal();
 
-		if (nuevoVeterinario != null) {
-			if (veterinarioExistentes.contains(nuevoVeterinario)) {
-				Alert alerta = generarVentana(AlertType.ERROR, "Ya existe este animal en la tabla", "ERROR");
-				alerta.show();
-			} else {
-				veterinarioDao.nuevoVeterinario(nuevoVeterinario);
-				veterinarioExistentes.add(nuevoVeterinario);
-				tableVeterinario.refresh();
-
-				Alert alerta = generarVentana(AlertType.INFORMATION, "Se ha añadido un animal", "INFO");
-				alerta.show();
-			}
+		if (nuevoAnimal != null && !animalExistentes.contains(nuevoAnimal)) {
+			veterinarioDao.nuevoVeterinario(nuevoAnimal);
+			animalExistentes.add(nuevoAnimal);
+			modal.close();  // Cerrar el modal después de agregar el animal
+		} else {
+			mostrarAlerta(AlertType.ERROR, "Ya existe este animal en la tabla", "ERROR");
 		}
 	}
 
+
 	/**
-	 * Elimina el veterinario seleccionado de la base de datos y de la tabla.
+	 * Elimina el animal seleccionado de la base de datos y la tabla.
 	 *
 	 * @param event Evento de acción del botón de eliminar.
 	 */
 	@FXML
 	void actionEliminarAnimal(ActionEvent event) {
-		Veterinario itemSeleccionado = tableVeterinario.getSelectionModel().getSelectedItem();
 
-		if (itemSeleccionado != null) {
-			veterinarioDao.borrarVeterinario(itemSeleccionado);
-			veterinarioExistentes.remove(itemSeleccionado);
-			tableVeterinario.refresh();
-
-			Alert alerta = generarVentana(AlertType.INFORMATION, "Se ha borrado un animal", "INFO");
-			alerta.show();
-		} else {
-			Alert alerta = generarVentana(AlertType.ERROR, "NO se ha seleccionado ningún animal", "ERROR");
-			alerta.show();
+		Animal animal = tableVeterinario.getSelectionModel().getSelectedItem();
+		if (animal == null) {
+			mostrarAlerta(AlertType.ERROR, "No se ha seleccionado ningún animal", "ERROR");
+		} else if (confirmarBorrado(animal)) {
+			veterinarioDao.borrarVeterinario(animal);
+			animalExistentes.remove(animal);
 		}
 	}
 
 	/**
-	 * Modifica el veterinario seleccionado y actualiza la base de datos y la tabla.
+	 * Modifica el animal seleccionado en la base de datos y actualiza la tabla.
 	 *
 	 * @param event Evento de acción del botón de modificar.
 	 */
 	@FXML
 	void actionModificarAnimal(ActionEvent event) {
-		if (veterinario != null) {
-			SModal modal = new SModal(veterinario.getNombre(), veterinario.getEspecie(), veterinario.getRaza(),
-					veterinario.getSexo(), veterinario.getEdad(), veterinario.getPeso(), veterinario.getObservaciones(),
-					veterinario.getFecha());
-
-			controlador = modal.getController();
-			Veterinario nuevoVeterinario = controlador.veterinario;
-
-			if (nuevoVeterinario != null) {
-				veterinarioDao.modificarVeterinario(veterinario, nuevoVeterinario);
-				veterinarioExistentes.set(veterinarioExistentes.indexOf(veterinario), nuevoVeterinario);
-				tableVeterinario.refresh();
-			}
-		} else {
-			Alert alerta = generarVentana(AlertType.ERROR, "No se ha seleccionado ningún animal en la tabla", "ERROR");
-			alerta.show();
+		animalSeleccionado = tableVeterinario.getSelectionModel().getSelectedItem();
+		if (animalSeleccionado == null) {
+			mostrarAlerta(AlertType.ERROR, "No se ha seleccionado ningún animal", "ERROR");
+			return;
 		}
-	}
 
-	/**
-	 * Maneja el evento de selección de una fila en la tabla, estableciendo el
-	 * veterinario seleccionado.
-	 *
-	 * @param event Evento de clic del ratón en la tabla.
-	 */
-	@FXML
-	void actionTablaPulsada(MouseEvent event) {
-		try {
-			TableView<Veterinario> source = (TableView<Veterinario>) event.getSource();
-			TablePosition<?, ?> pos = source.getSelectionModel().getSelectedCells().get(0);
-			int selectedRow = pos.getRow();
+		// Crear una instancia de la ventana modal
+		SModal modal = new SModal();
+		SModalController controlador = modal.getController();
 
-			// Obtiene los datos de la fila seleccionada
-			String nombre = String.valueOf(source.getColumns().get(0).getCellData(selectedRow));
-			String especie = String.valueOf(source.getColumns().get(1).getCellData(selectedRow));
-			String raza = String.valueOf(source.getColumns().get(2).getCellData(selectedRow));
-			String sexo = String.valueOf(source.getColumns().get(3).getCellData(selectedRow));
-			int edad = Integer.parseInt(String.valueOf(source.getColumns().get(4).getCellData(selectedRow)));
-			float peso = Float.parseFloat(String.valueOf(source.getColumns().get(5).getCellData(selectedRow)));
-			String observaciones = String.valueOf(source.getColumns().get(6).getCellData(selectedRow));
-			String fecha = String.valueOf(source.getColumns().get(7).getCellData(selectedRow));
+		// Cargar los datos del animal seleccionado en la ventana modal
+		controlador.cargarDatosAnimal(animalSeleccionado);
 
-			// Obtener la imagen como byte[]
-			byte[] imagen = (byte[]) source.getColumns().get(8).getCellData(selectedRow); // Suponiendo que la columna 8 contiene la imagen
+		// Mostrar la ventana modal después de cargar los datos
+		modal.showAndWait();
 
-			// Crear un nuevo objeto Veterinario con todos los datos
-			veterinario = new Veterinario(nombre, especie, raza, sexo, edad, peso, observaciones, fecha, imagen);
-
-			System.out.println("Veterinario ACTUAL " + veterinario);
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		// Obtener el animal modificado después de cerrar la ventana modal
+		Animal animalModificado = controlador.getAnimal();
+		if (animalModificado != null) {
+			// Actualizar el animal en la base de datos y la tabla
+			veterinarioDao.modificarVeterinario(animalSeleccionado, animalModificado);
+			animalExistentes.set(animalExistentes.indexOf(animalSeleccionado), animalModificado);
 		}
 	}
 
 
+
 	/**
-	 * Genera una ventana de alerta con el mensaje especificado.
+	 * Filtra la lista de animales en la tabla según el texto ingresado en el campo de búsqueda.
 	 *
-	 * @param tipoDeAlerta Tipo de alerta (ERROR, INFORMATION, etc.).
-	 * @param mensaje      Mensaje a mostrar en la alerta.
-	 * @param title        Título de la alerta.
-	 * @return Objeto Alert configurado.
+	 * @param filtro El texto de filtro.
 	 */
-	private Alert generarVentana(AlertType tipoDeAlerta, String mensaje, String title) {
-		Alert alerta = new Alert(tipoDeAlerta);
+	private void filtrarAnimal(String filtro) {
+		filteredList = animalExistentes.filtered(v -> v.getNombre().toLowerCase().contains(filtro.toLowerCase()) ||
+				v.getEspecie().toLowerCase().contains(filtro.toLowerCase()) ||
+				v.getRaza().toLowerCase().contains(filtro.toLowerCase()) ||
+				v.getObservaciones().toLowerCase().contains(filtro.toLowerCase()));
+
+		tableVeterinario.setItems(filteredList);
+	}
+
+	/**
+	 * Muestra una alerta con el tipo, mensaje y título especificados.
+	 *
+	 * @param tipo Tipo de alerta.
+	 * @param mensaje Mensaje a mostrar.
+	 * @param titulo Título de la alerta.
+	 */
+	private void mostrarAlerta(AlertType tipo, String mensaje, String titulo) {
+		Alert alerta = new Alert(tipo);
 		alerta.setContentText(mensaje);
-		alerta.setHeaderText(null);
-		alerta.setTitle(title);
-		return alerta;
+		alerta.setTitle(titulo);
+		alerta.showAndWait();
+	}
+
+	/**
+	 * Muestra una confirmación para eliminar el animal.
+	 *
+	 * @param animal El animal a eliminar.
+	 * @return true si se confirma la eliminación, false en caso contrario.
+	 */
+	private boolean confirmarBorrado(Animal animal) {
+		Alert confirmacion = new Alert(AlertType.CONFIRMATION);
+		confirmacion.setTitle("Confirmar Eliminación");
+		confirmacion.setContentText("¿Está seguro de que desea eliminar el animal " + animal.getNombre() + "?");
+		return confirmacion.showAndWait().filter(response -> response == ButtonType.OK).isPresent();
 	}
 }

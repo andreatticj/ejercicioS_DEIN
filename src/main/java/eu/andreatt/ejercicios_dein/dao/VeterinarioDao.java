@@ -1,15 +1,12 @@
 package eu.andreatt.ejercicios_dein.dao;
 
 import eu.andreatt.ejercicios_dein.bbdd.ConexionBD;
-import eu.andreatt.ejercicios_dein.model.Veterinario;
+import eu.andreatt.ejercicios_dein.model.Animal;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,8 +15,8 @@ public class VeterinarioDao {
 	private ConexionBD conexion;
 
 	/** CARGAR LOS VETERINARIOS EXISTENTES EN BASE DE DATOS */
-	public ObservableList<Veterinario> cargarVeterinario() {
-		ObservableList<Veterinario> veterinarios = FXCollections.observableArrayList();
+	public ObservableList<Animal> cargarAnimales() {
+		ObservableList<Animal> animals = FXCollections.observableArrayList();
 		try {
 			conexion = new ConexionBD();
 			String consulta = "SELECT * FROM Veterinario";
@@ -35,24 +32,24 @@ public class VeterinarioDao {
 				float pesoAnimal = rs.getFloat("peso");
 				String observacionesAnimal = rs.getString("observaciones");
 				String fechaPrimeraConsulta = rs.getString("fecha_primera_consulta");
-				byte[] imageAnimal = rs.getBytes("imagen"); // Obtener la imagen como byte array
+				Blob foto = rs.getBlob("imagen");
 
-				// Crear objeto Veterinario con la imagen
-				veterinarios.add(new Veterinario(nombreAnimal, especieAnimal, razaAnimal, sexoAnimal, edadAnimal, pesoAnimal, observacionesAnimal, fechaPrimeraConsulta, imageAnimal));
+				// Crear objeto Veterinario con el Blob de la imagen
+				animals.add(new Animal(nombreAnimal, especieAnimal, razaAnimal, sexoAnimal, edadAnimal, pesoAnimal, observacionesAnimal, fechaPrimeraConsulta, foto));
 			}
 			rs.close();
 			conexion.closeConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return veterinarios;
+		return animals;
 	}
 
 	/** INSERTAR UN VETERINARIO EN LA BASE DE DATOS */
-	public boolean nuevoVeterinario(Veterinario p) {
+	public boolean nuevoVeterinario(Animal p) {
 		// Validar si el veterinario ya existe
-		ObservableList<Veterinario> veterinarios = cargarVeterinario();
-		if (veterinarios.contains(p)) {
+		ObservableList<Animal> animals = cargarAnimales();
+		if (animals.contains(p)) {
 			return false;
 		}
 
@@ -71,11 +68,7 @@ public class VeterinarioDao {
 			pstmt.setFloat(7, p.getPeso());
 			pstmt.setString(8, p.getObservaciones());
 			pstmt.setString(9, p.getFecha());
-
-			// Asignar imagen como InputStream si existe
-			byte[] imageBytes = p.getImagen();
-			InputStream imagenStream = (imageBytes != null) ? new ByteArrayInputStream(imageBytes) : null;
-			pstmt.setBlob(10, imagenStream);
+			pstmt.setBlob(9, p.getImagen());
 
 			pstmt.executeUpdate();
 			conexion.closeConnection();
@@ -88,7 +81,7 @@ public class VeterinarioDao {
 	}
 
 	/** BORRAR UN VETERINARIO EN LA BASE DE DATOS */
-	public void borrarVeterinario(Veterinario p) {
+	public void borrarVeterinario(Animal p) {
 		try {
 			conexion = new ConexionBD();
 			String consulta = "DELETE FROM Veterinario WHERE id = ?";
@@ -102,36 +95,39 @@ public class VeterinarioDao {
 	}
 
 	/** ACTUALIZAR UN VETERINARIO EN LA BASE DE DATOS */
-	public void modificarVeterinario(Veterinario antiguoVeterinario, Veterinario nuevoVeterinario) {
+	public void modificarVeterinario(Animal antiguoAnimal, Animal nuevoAnimal) {
 		try {
 			conexion = new ConexionBD();
 			String consulta = "UPDATE Veterinario SET nombre = ?, especie = ?, raza = ?, sexo = ?, edad = ?, peso = ?, observaciones = ?, fecha_primera_consulta = ?, imagen = ? WHERE id = ?";
 			PreparedStatement pstmt = conexion.getConexion().prepareStatement(consulta);
 
-			pstmt.setString(1, nuevoVeterinario.getNombre());
-			pstmt.setString(2, nuevoVeterinario.getEspecie());
-			pstmt.setString(3, nuevoVeterinario.getRaza());
-			pstmt.setString(4, nuevoVeterinario.getSexo());
-			pstmt.setInt(5, nuevoVeterinario.getEdad());
-			pstmt.setFloat(6, nuevoVeterinario.getPeso());
-			pstmt.setString(7, nuevoVeterinario.getObservaciones());
-			pstmt.setString(8, nuevoVeterinario.getFecha());
+			pstmt.setString(1, nuevoAnimal.getNombre());
+			pstmt.setString(2, nuevoAnimal.getEspecie());
+			pstmt.setString(3, nuevoAnimal.getRaza());
+			pstmt.setString(4, nuevoAnimal.getSexo());
+			pstmt.setInt(5, nuevoAnimal.getEdad());
+			pstmt.setFloat(6, nuevoAnimal.getPeso());
+			pstmt.setString(7, nuevoAnimal.getObservaciones());
+			pstmt.setString(8, nuevoAnimal.getFecha());
 
-			// Asignar imagen como InputStream si existe
-			byte[] imageBytes = nuevoVeterinario.getImagen();
-			InputStream imagenStream = (imageBytes != null) ? new ByteArrayInputStream(imageBytes) : null;
-			pstmt.setBlob(9, imagenStream);
+			// Verificar si la imagen es null antes de intentar obtener el BinaryStream
+			Blob imagenBlob = nuevoAnimal.getImagen();
+			if (imagenBlob != null) {
+				InputStream imagenStream = imagenBlob.getBinaryStream();
+				pstmt.setBlob(9, imagenStream);
+			} else {
+				pstmt.setNull(9, java.sql.Types.BLOB);  // Establecer NULL si la imagen es null
+			}
 
-			pstmt.setInt(10, dameIDVeterinario(antiguoVeterinario));
+			pstmt.setInt(10, dameIDVeterinario(antiguoAnimal));
 			pstmt.executeUpdate();
 			conexion.closeConnection();
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	/** OBTENER EL ID DEL VETERINARIO SOLICITADO */
-	public int dameIDVeterinario(Veterinario p) {
+	public int dameIDVeterinario(Animal p) {
 		try {
 			conexion = new ConexionBD();
 			String consulta = "SELECT id FROM Veterinario WHERE nombre = ? AND raza = ? AND edad = ?";
