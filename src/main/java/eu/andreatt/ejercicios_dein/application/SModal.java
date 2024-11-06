@@ -2,12 +2,14 @@ package eu.andreatt.ejercicios_dein.application;
 
 import eu.andreatt.ejercicios_dein.controllers.SModalController;
 import eu.andreatt.ejercicios_dein.model.Animal;
+import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javafx.fxml.FXMLLoader;
 
@@ -89,6 +91,15 @@ public class SModal extends Stage {
             controller.setTextFieldPeso(a.getPeso()+"");
             controller.setTextFieldObservaciones(a.getObservaciones());
             controller.setFecha(a.getFecha());
+
+            // Cargar la imagen si existe
+            if (a.getImagen() != null) {
+                try {
+                    controller.getImageView().setImage(new Image(a.getImagen().getBinaryStream()));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
 
             // Configura la escena y la ventana modal.
             Scene scene = new Scene(root);

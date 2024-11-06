@@ -1,5 +1,6 @@
 package eu.andreatt.ejercicios_dein.controllers;
 
+import eu.andreatt.ejercicios_dein.dao.VeterinarioDao;
 import eu.andreatt.ejercicios_dein.model.Animal;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -16,9 +17,7 @@ import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -64,6 +63,7 @@ public class SModalController {
 
 	@FXML
 	private TextField textFieldSexo;
+	private VeterinarioDao veterinarioDao = new VeterinarioDao();
 
 	/** Objeto Animal que contiene los datos que se gestionan en la ventana. */
 	private Animal animal;
@@ -127,7 +127,31 @@ public class SModalController {
 
 		// Muestra un cuadro de diálogo para seleccionar un archivo de imagen.
 		File archivo = fileChooser.showOpenDialog(buttonImage.getScene().getWindow());
+
+		if (!esTamanoValido(archivo)) {
+			Alert alerta = generarVentana(AlertType.ERROR, "La imagen no puede tener un tamaño mayor a 64kb", "ERROR");
+			alerta.show();
+			return;
+		}
+
 		if (archivo != null) {
+			try {
+
+				// Intentar convertir el archivo a un Blob
+				Blob blob = veterinarioDao.convertFileToBlob(archivo);
+				this.imagen = blob; // Asignar el Blob a la variable de instancia
+
+				// Abrir un InputStream para la imagen y establecerla en el ImageView
+				try (InputStream imagenStream = new FileInputStream(archivo)) {
+					imageView.setImage(new Image(imagenStream));
+				}
+			}  catch (IOException e) {
+				// Muestra una alerta en caso de error al cargar la imagen.
+				generarVentana(AlertType.ERROR, "Error al cargar la imagen: " + e.getMessage(), "ERROR").show();
+			}
+
+
+
 			try {
 				// Convierte la imagen seleccionada en un formato adecuado para el ImageView.
 				BufferedImage bufferedImage = ImageIO.read(archivo);
@@ -227,6 +251,11 @@ public class SModalController {
 		}
 	}
 
+	private boolean esTamanoValido(File file) {
+		double kbs = (double) file.length() / 1024;
+		return kbs <= 64; // Tamaño máximo de 64 KB
+	}
+
 	/**
 	 * Obtiene el objeto {@link Animal} asociado a la ventana modal.
 	 *
@@ -285,5 +314,9 @@ public class SModalController {
 
 	public void setImagen(Blob imagen) {
 		this.imagen = imagen;
+	}
+
+	public ImageView getImageView() {
+		return imageView;
 	}
 }
