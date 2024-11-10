@@ -50,7 +50,7 @@ public class S extends Application {
 
     /**
      * Metodo principal de la aplicación que lanza la interfaz gráfica.
-     * Este método invoca el lanzamiento de la aplicación {@link #start(Stage)}.
+     * Este metodo invoca el lanzamiento de la aplicación {@link #start(Stage)}.
      *
      * @param args Argumentos de la línea de comandos, si los hubiera.
      */
