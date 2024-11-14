@@ -1,10 +1,13 @@
 package eu.andreatt.ejercicios_dein.application;
 
+import eu.andreatt.ejercicios_dein.bbdd.ConexionBD;
 import javafx.application.Application;
-import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 
 /**
@@ -22,30 +25,51 @@ public class S extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Carga el archivo FXML que contiene la interfaz gráfica.
-            GridPane root = (GridPane)FXMLLoader.load(getClass().getResource("/eu/andreatt/ejercicios_dein/fxml/S.fxml"));
+            // Verifica la conexión a la base de datos
+            ConexionBD conexionBD = new ConexionBD();
+            if (conexionBD.getConexion() == null) {
+                System.exit(1); // Cerrar la aplicación si no hay conexión
+            }
 
-            // Crea una escena con el layout cargado y establece el tamaño de la ventana.
+            // Carga el archivo FXML que contiene la interfaz gráfica
+            GridPane root = FXMLLoader.load(getClass().getResource("/eu/andreatt/ejercicios_dein/fxml/S.fxml"));
+
+            // Crea una escena con el layout cargado y establece el tamaño de la ventana
             Scene scene = new Scene(root, 1000, 820);
 
-            // Establece el título de la ventana.
+            // Establece el título de la ventana
             primaryStage.setTitle("Veterinario");
 
-            // Impide que la ventana cambie de tamaño.
+            // Impide que la ventana cambie de tamaño
             primaryStage.setResizable(false);
 
-            // Asigna la escena al escenario principal.
+            // Asigna la escena al escenario principal
             primaryStage.setScene(scene);
 
-            // Carga el icono para la ventana utilizando una imagen desde los recursos del proyecto.
+            // Carga el icono para la ventana utilizando una imagen desde los recursos del proyecto
             Image icon = new Image(getClass().getResourceAsStream("/eu/andreatt/ejercicios_dein/images/veterinaria.png"));
             primaryStage.getIcons().add(icon);
 
-            // Muestra la ventana en pantalla.
+            // Muestra la ventana en pantalla
             primaryStage.show();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            System.exit(1); // Cerrar la aplicación en caso de error
         }
+    }
+
+    /**
+     * Muestra una alerta con el mensaje y tipo especificado.
+     *
+     * @param mensaje El mensaje a mostrar en la alerta.
+     * @param tipo El tipo de alerta (advertencia, error, etc.).
+     */
+    private void mostrarAlerta(String mensaje, AlertType tipo) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle("Error de conexión");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
     }
 
     /**
